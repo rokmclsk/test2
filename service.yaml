@@ -1,13 +1,11 @@
-kind: Service
 apiVersion: v1
+kind: Service
 metadata:
-  labels:
-    k8s-app: debian-test
-  name: debian-test
+  name: mynginx
 spec:
   ports:
-    - port: 80
-      targetPort: 80
-  type: NodePort
+  - port: 80
+    protocol: TCP
+    targetPort: 80
   selector:
-    k8s-app: debian-test
+    run: mynginx
