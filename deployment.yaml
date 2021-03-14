@@ -1,19 +1,38 @@
-apiVersion: apps/v1
 kind: Deployment
+apiVersion: apps/v1
 metadata:
-  name: mynginx
+  labels:
+    k8s-app: debian-test
+  name: debian-test
 spec:
   replicas: 1
+  revisionHistoryLimit: 10
   selector:
     matchLabels:
-      run: mynginx
+      k8s-app: debian-test
   template:
     metadata:
       labels:
-        run: mynginx
+        k8s-app: debian-test
     spec:
       containers:
-      - image: 879873534644.dkr.ecr.ap-northeast-1.amazonaws.com/eks-test:1.2
-        name: mynginx
+      - name: debian-test
+        image: 879873534644.dkr.ecr.ap-northeast-1.amazonaws.com/eks-test:1.1 
+        imagePullPolicy: Always
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
         ports:
         - containerPort: 80
+          protocol: TCP
+        livenessProbe:
+          httpGet:
+            scheme: HTTP
+            path: /
+            port: 80
+          initialDelaySeconds: 30
+          timeoutSeconds: 30
