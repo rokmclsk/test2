@@ -4,7 +4,7 @@ metadata:
   name: mynginx
   namespace: pcc
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       run: mynginx
