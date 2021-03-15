@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: mynginx
-  namespace: service
+  namespace: pcc
 spec:
   replicas: 1
   selector:
