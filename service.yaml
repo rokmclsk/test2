@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: mynginx
-  namespaces: dev
+  namespace: stg
 spec:
   ports:
   - port: 80
