@@ -1,54 +1,31 @@
-apiVersion: argoproj.io/v1alpha1 # apps/v1 대신 argoproj.io/v1alpha1를 사용한다.
-kind: Rollout # Deployment 대신 Rollout을 사용한다.
-# ==== 이 아래의 내용은 기존 Deployment와 동일하게 작성한다. ====
+apiVersion: apps/v1
+kind: Deployment
 metadata:
-  name: rollout-bluegreen
+  name: nginx
 spec:
-  replicas: 2
-  revisionHistoryLimit: 2
+  replicas: 1
   selector:
     matchLabels:
-      app: rollout-bluegreen
+      run: nginx
   template:
     metadata:
       labels:
-        app: rollout-bluegreen
+        run: nginx
     spec:
       containers:
-      - name: rollouts-demo
-        image: 879873534644.dkr.ecr.ap-northeast-1.amazonaws.com/test-repo:1.1
-        imagePullPolicy: Always
+      - image: nginx
+        name: nginx
         ports:
-        - containerPort: 8080
-# ==== 이 위의 내용은 기존 Deployment와 동일하게 작성한다. ====
-  strategy:
-    blueGreen: 
-      activeService: rollout-bluegreen-active
-      previewService: rollout-bluegreen-preview
-      autoPromotionEnabled: false
-
+        - containerPort: 80
 ---
-kind: Service
 apiVersion: v1
-metadata:
-  name: rollout-bluegreen-active
-spec:
-  selector:
-    app: rollout-bluegreen
-  ports:
-  - protocol: TCP
-    port: 80
-    targetPort: 8080
-
----
 kind: Service
-apiVersion: v1
 metadata:
-  name: rollout-bluegreen-preview
+  name: nginx
 spec:
-  selector:
-    app: rollout-bluegreen
   ports:
-  - protocol: TCP
-    port: 80
-    targetPort: 8080
+  - port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    run: nginx
