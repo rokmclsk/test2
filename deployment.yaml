@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: rollouts-demo
-        image: 879873534644.dkr.ecr.ap-northeast-1.amazonaws.com/test-repo:1.1
+        image: 879873534644.dkr.ecr.ap-northeast-1.amazonaws.com/test-repo:1.2
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
