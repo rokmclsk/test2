@@ -1,6 +1,5 @@
-apiVersion: argoproj.io/v1alpha1 # apps/v1 대신 argoproj.io/v1alpha1를 사용한다.
-kind: Rollout # Deployment 대신 Rollout을 사용한다.
-# ==== 이 아래의 내용은 기존 Deployment와 동일하게 작성한다. ====
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
 metadata:
   name: rollout-bluegreen
 spec:
@@ -16,16 +15,16 @@ spec:
     spec:
       containers:
       - name: rollouts-demo
-        image: 879873534644.dkr.ecr.ap-northeast-1.amazonaws.com/test-repo:1.2
+        image: argoproj/rollouts-demo:blue
+#         image: argoproj/rollouts-demo:green
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
-# ==== 이 위의 내용은 기존 Deployment와 동일하게 작성한다. ====
   strategy:
-    blueGreen:
+    blueGreen: 
       activeService: rollout-bluegreen-active
       previewService: rollout-bluegreen-preview
-      autoPromotionEnabled: false
+      autoPromotionEnabled: true
 
 ---
 kind: Service
@@ -39,6 +38,8 @@ spec:
   - protocol: TCP
     port: 80
     targetPort: 8080
+    nodePort: 30081
+  type: NodePort
 
 ---
 kind: Service
@@ -52,4 +53,5 @@ spec:
   - protocol: TCP
     port: 80
     targetPort: 8080
-
+    nodePort: 30082
+  type: NodePort
