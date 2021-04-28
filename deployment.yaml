@@ -1,20 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: nginx
+  name: nginx-deployment
+  labels:
+    app: nginx
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
-      run: nginx
+      app: nginx
   template:
     metadata:
       labels:
-        run: nginx
+        app: nginx
     spec:
       containers:
-      - image: 879873534644.dkr.ecr.ap-northeast-1.amazonaws.com/eks-test:1.2
-        name: nginx
+      - name: nginx
+        image: 879873534644.dkr.ecr.ap-northeast-1.amazonaws.com/eks-test:1.2
         ports:
         - containerPort: 80
 ---
@@ -27,5 +29,3 @@ spec:
   - port: 80
     protocol: TCP
     targetPort: 80
-  selector:
-    run: nginx
