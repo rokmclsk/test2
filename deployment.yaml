@@ -1,31 +1,31 @@
-apiVersion: argoproj.io/v1alpha1
-kind: Rollout
+apiVersion: apps/v1
+kind: Deployment
 metadata:
-  name: example-rollout
+  name: nginx
 spec:
-  replicas: 5
+  replicas: 1
   selector:
     matchLabels:
-      app: nginx
+      run: nginx
   template:
     metadata:
       labels:
-        app: nginx
+        run: nginx
     spec:
       containers:
-      - name: nginx
-        image: nginx:1.15.3
+      - image: nginx
+        name: nginx
         ports:
         - containerPort: 80
-  minReadySeconds: 30
-  revisionHistoryLimit: 3
-# ==== 이 위의 내용은 기존 Deployment와 동일하게 작성한다. ====
-  strategy:
-    canary:
-      steps:
-      - setWeight: 20
-      - pause:
-          duration: "60s"
-      - setWeight: 50
-      - pause:
-          duration: "60s"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    run: nginx
