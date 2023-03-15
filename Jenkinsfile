@@ -1,61 +1,106 @@
-podTemplate(label: 'docker-build', 
-  containers: [
-    containerTemplate(
-      name: 'git',
-      image: 'alpine/git',
-      command: 'cat',
-      ttyEnabled: true
-    ),
-    containerTemplate(
-      name: 'docker',
-      image: 'docker',
-      command: 'cat',
-      ttyEnabled: true
-    ),
-  ],
-  volumes: [ 
-    hostPathVolume(mountPath: '/var/run/docker.sock', hostPath: '/var/run/docker.sock'), 
-  ]
-) {
-    node('docker-build') {
-        def dockerHubCred = <your_dockerhub_cred>
-        def appImage
-        
-        stage('Checkout'){
-            container('git'){
-                checkout scm
-            }
-        }
-        
-        stage('Build'){
-            container('docker'){
+pipeline {
+    agent any
+
+    tools {
+      // Jenkins 'Global Tool Configuration' 에 설정한 버전과 연동
+      maven 'apache-maven-3.8.1'
+    }
+
+    environment {
+        ECR_PATH = '788692874122.dkr.ecr.ap-northeast-1.amazonaws.com'
+        ECR_IMAGE = 'demo-maven-springboot'
+        REGION = 'ap-northeast-1'
+        ACCOUNT_ID='788692874122'
+    }
+
+    stages {
+        stage('Git Clone from gitSCM') {
+            steps {
                 script {
-                    appImage = docker.build("<your-dockerhub-id>/node-hello-world")
-                }
-            }
-        }
-        
-        stage('Test'){
-            container('docker'){
-                script {
-                    appImage.inside {
-                        sh 'npm install'
-                        sh 'npm test'
+                    try {
+                        git branch: 'main', 
+                            credentialsId: 'GitCredential',
+                            url: 'https://github.com/rokmclsk/test2'
+                        sh "ls -lat"
+                        sh "sudo rm -rf ./.git"
+                        env.cloneResult=true
+                        
+                    } catch (error) {
+                        print(error)
+                        env.cloneResult=false
+                        currentBuild.result = 'FAILURE'
                     }
                 }
             }
         }
-
-        stage('Push'){
-            container('docker'){
-                script {
-                    docker.withRegistry('https://registry.hub.docker.com', dockerHubCred){
-                        appImage.push("${env.BUILD_NUMBER}")
-                        appImage.push("latest")
+        stage("Build JAR with Maven") {
+            when {
+                expression {
+                    return env.cloneResult ==~ /(?i)(Y|YES|T|TRUE|ON|RUN)/
+                }                
+            }
+            steps {
+                script{
+                    try {
+                        sh """
+                        rm -rf deploy
+                        mkdir deploy
+                        mvn --version
+                        java -version
+                        """
+                        sh "sed -i 's/  version:.*/  version: \${VERSION:v${env.BUILD_NUMBER}}/g' /var/lib/jenkins/workspace/${env.JOB_NAME}/src/main/resources/application.yaml"
+                        sh "cat /var/lib/jenkins/workspace/${env.JOB_NAME}/src/main/resources/application.yaml"
+                        sh 'mvn -e -Dmaven.test.failure.ignore=true clean install'
+                        sh """
+                        cd deploy
+                        cp /var/lib/jenkins/workspace/${env.JOB_NAME}/target/*.jar ./${ECR_IMAGE}.jar
+                        """
+                        env.mavenBuildResult=true
+                    } catch (error) {
+                        print(error)
+                        echo 'Remove Deploy Files'
+                        sh "sudo rm -rf /var/lib/jenkins/workspace/${env.JOB_NAME}/*"
+                        env.mavenBuildResult=false
+                        currentBuild.result = 'FAILURE'
+                    }
+                }
+            }
+        }
+        stage('Docker Build and Push to ECR'){
+            when {
+                expression {
+                    return env.mavenBuildResult ==~ /(?i)(Y|YES|T|TRUE|ON|RUN)/
+                }
+            }
+            steps {
+                script{
+                    try {
+                        sh"""
+                        #!/bin/bash
+                        cat>Dockerfile<<-EOF
+FROM openjdk:11-jre-slim
+ENV JAVA_OPTS="-XX:InitialRAMPercentage=40.0 -XX:MaxRAMPercentage=80.0"
+ADD ./deploy/${ECR_IMAGE}.jar /home/${ECR_IMAGE}.jar
+CMD nohup java -jar /home/${ECR_IMAGE}.jar 1> /dev/null 2>&1
+EXPOSE 8080
+EOF"""
+                        docker.withRegistry("https://${ECR_PATH}", "ecr:${REGION}:AWSCredentials") {
+                            def image = docker.build("${ECR_PATH}/${ECR_IMAGE}:${env.BUILD_NUMBER}")
+                            image.push()
+                        }
+                        
+                        echo 'Remove Deploy Files'
+                        sh "sudo rm -rf /var/lib/jenkins/workspace/${env.JOB_NAME}/*"
+                        env.dockerBuildResult=true
+                    } catch (error) {
+                        print(error)
+                        echo 'Remove Deploy Files'
+                        sh "sudo rm -rf /var/lib/jenkins/workspace/${env.JOB_NAME}/*"
+                        env.dockerBuildResult=false
+                        currentBuild.result = 'FAILURE'
                     }
                 }
             }
         }
     }
-    
 }
