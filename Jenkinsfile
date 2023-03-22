@@ -22,11 +22,11 @@ node {
      stage('Deploy') { 
          // 사전 준비
          sh("""
-            git config --global user.name "Your Name"
+            git config --global user.name "rokmclsk"
             git config --global user.email "you@example.com"
             git checkout -B master
          """)
-      withCredentials([usernamePassword(credentialsId: 'github-signin', usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD')]) {   
+      withCredentials([usernamePassword(credentialsId: 'github-signin', usernameVariable: 'rokmclsk', passwordVariable: '#1wndeo!')]) {   
             sh("""
                #!/usr/bin/env bash
                git config --local credential.helper "!f() { echo username=\\$GIT_USERNAME; echo password=\\$GIT_PASSWORD; }; f"
