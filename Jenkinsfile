@@ -36,7 +36,7 @@ node {
                git commit -m "update the image tag"
                git push origin HEAD:master
             """)   
-        
+      }
          
      }
           
