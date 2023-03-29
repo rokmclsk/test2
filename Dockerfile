@@ -1,4 +1,4 @@
-FROM ubuntu:latest
+FROM ubuntu:17.04
 
 # Install Nginx.
 RUN apt-get update
