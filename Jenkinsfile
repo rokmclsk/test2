@@ -1,5 +1,3 @@
-USER root
-
 node {
      stage('Clone repository') {
          checkout scm
