@@ -1,31 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: nginx
+  name: nginx-deployment
 spec:
-  replicas: 2
   selector:
     matchLabels:
-      run: nginx
+      app: nginx
+  replicas: 2
   template:
     metadata:
       labels:
-        run: nginx
+        app: nginx
     spec:
       containers:
-      - image: 788692874122.dkr.ecr.ap-northeast-1.amazonaws.com/test:1.1
-        name: nginx
+      - name: nginx
+        image: nginx:1.16.1 # Update the version of nginx from 1.14.2 to 1.16.1
         ports:
         - containerPort: 80
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: nginx
-spec:
-  ports:
-  - port: 80
-    protocol: TCP
-    targetPort: 80
-  selector:
-    run: nginx
