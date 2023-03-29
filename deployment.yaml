@@ -7,7 +7,7 @@ spec:
     matchLabels:
       app: nginx
   replicas: 3 
-strategy:
+  strategy:
     type: RollingUpdate
     rollingUpdate:
       maxSurge: 1
