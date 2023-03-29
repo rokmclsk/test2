@@ -11,7 +11,7 @@ node {
          docker.withRegistry('https://788692874122.dkr.ecr.ap-northeast-1.amazonaws.com', 'ecr:ap-northeast-1:ecr-credential') {
              app.push("${env.BUILD_NUMBER}")
              app.push("latest")
-              
+     }       
      stage('K8S Manifest Update') {
         steps {
             git credentialsId: '{jenkins}',
@@ -25,7 +25,7 @@ node {
                 sh "git remote set-url origin git@github.com:rokmclsk/test2.git"
                 sh "git push -u origin master"
              }
-        }
+        
      }
   }
 }
