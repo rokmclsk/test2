@@ -25,7 +25,7 @@ node {
                 sh "git remote set-url origin git@github.com:rokmclsk/test2.git"
                 sh "git push -u origin master"
              }
-        
+        }
      }
   }
 }
