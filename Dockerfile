@@ -8,6 +8,7 @@ RUN chown -R www-data:www-data /var/lib/nginx
 
 # Define mountable directories.
 VOLUME ["/etc/nginx/sites-enabled", "/etc/nginx/certs", "/etc/nginx/conf.d", "/var/log/nginx", "/var/www/html"]
+RUN echo "Are You OK??" > /var/www/html
 
 # Define working directory.
 WORKDIR /etc/nginx
