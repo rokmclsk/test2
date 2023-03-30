@@ -12,7 +12,7 @@ node {
              app.push("${env.BUILD_NUMBER}")
              app.push("latest")
      }  
-
+     }
      stage('updating kubernetes deployment file') {
           sh "cat deployment.yaml"
           sh "sed -i 's/test.*/test:${env.BUILD_NUMBER}/g' deployment.yaml"
@@ -29,8 +29,7 @@ node {
                sshagent(credentials: ['{jenkins}']) {
                   sh "git remote set-url origin git@github.com/rokmclsk/test2.git"
                   sh "git push -u origin master"
-               }
-          }
+             }
           }
       }      
    }
