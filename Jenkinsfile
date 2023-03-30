@@ -31,6 +31,7 @@ node {
                   sh "git push -u origin master"
                }
           }
+          }
       }      
    }
 }
