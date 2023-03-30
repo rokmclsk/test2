@@ -16,6 +16,7 @@ node {
      stage('updating kubernetes deployment file') {
           sh "cat deployment.yaml"
           sh "sed -i 's/test.*/test:${env.BUILD_NUMBER}/g' deployment.yaml"
+          sh "cat deployment.yaml"
       }
    }
 }
