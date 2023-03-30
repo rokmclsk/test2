@@ -13,7 +13,8 @@ node {
              app.push("latest")
       }       
      stage('updating kubernetes deployment file') {
-          sed -i 's/${test}.*/${test}:${env.BUILD_NUMBER}/g' deployment.yaml"
+          sed -i 's/test.*/test:${env.BUILD_NUMBER}/g' deployment.yaml"
    }
+}
 }
 }
