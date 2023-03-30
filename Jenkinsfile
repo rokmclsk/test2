@@ -26,8 +26,7 @@ node {
                git config --global user.email "rokmclsk@naver.com"
                git add deployment.yaml
                git commit -m 'Update the deployment file' """
-               withCredentials([usernamePassword(credentialsId: '97b00139-f330-4d78-950a-cc0bc7d0aff2', passwordVariable: 'pass', usernameVariable: 'rokmclsk')]) {
-                    sh "git push http://rokmclsk:$pass@github.com/rokmclsk/test2.git master"
+               git push https://github.com/rokmclsk/test2.git
                }
           }
       }      
