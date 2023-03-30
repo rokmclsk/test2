@@ -13,6 +13,6 @@ node {
              app.push("latest")
       }       
 
-     }
+   }
 }
-}
+
