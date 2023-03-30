@@ -20,9 +20,11 @@ node {
       }
           
      stage('push the changed deployment file to github') {
-          sh "git config --global user.name "rokmclsk""
-          sh "git config --global user.email "rokmclsk@hanmail.net""
-          sh "git commit -m 'Update the deployment file'"
+          script{
+               sh """
+               git config --global user.name "rokmclsk"
+               git config --global user.email "rokmclsk@hanmail.net"
+               git commit -m 'Update the deployment file'"""
       }      
    }
 }
