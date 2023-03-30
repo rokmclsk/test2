@@ -27,10 +27,9 @@ node {
                git add deployment.yaml
                git commit -m 'Update the deployment file' """
                sshagent(credentials: ['{jenkins}']) {
-                  sh "git remote set url origin git@github.com/rokmclsk/test2.git"
+                  sh "git remote set-url origin git@github.com/rokmclsk/test2.git"
                   sh "git push -u origin master"
                }
-          }
           }
       }      
    }
