@@ -27,7 +27,6 @@ node {
                git add deployment.yaml
                git commit -m 'Update the deployment file' """
                git push "https://github.com/rokmclsk/test2.git"
-               }
           }
       }      
    }
