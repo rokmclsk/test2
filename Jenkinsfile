@@ -26,7 +26,7 @@ node {
                git config --global user.email "rokmclsk@naver.com"
                git add deployment.yaml
                git commit -m 'Update the deployment file' """
-                  sh "git push https://rokmclsk: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@github.com/rokmclsk/test2.git"
+                  sh "git push http://rokmclsk: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@github.com/rokmclsk/test2.git"
           }
       }      
    }
