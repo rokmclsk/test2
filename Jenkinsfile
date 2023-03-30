@@ -21,10 +21,11 @@ node {
          
     stage('push the changed deployment file to github') {
          script{
-              sh """
+              sh """"
+              git config -global push.default simple
               git add deployment.yaml
               git commit -m 'Update the deployment file'
-              git push git@github.com/rokmclsk/test2.git """
+              git push git@github.com/rokmclsk/test2.git """"
          }
      }      
   }
