@@ -18,5 +18,11 @@ node {
           sh "sed -i 's/test.*/test:${env.BUILD_NUMBER}/g' deployment.yaml"
           sh "cat deployment.yaml"
       }
+          
+     stage('push the changed deployment file to github') {
+          sh "git config --global user.name "rokmclsk""
+          sh "git config --global user.email "rokmclsk@hanmail.net""
+          sh "git commit -m 'Update the deployment file'"
+      }      
    }
 }
