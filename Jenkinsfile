@@ -19,11 +19,11 @@ node {
                       branches: [[name: '*/main' ]],
                       extensions: scm.extensions,
                       userRemoteConfigs: [[
-                          url: 'git@github.com:cure4itches/docker-hello-world-deployment.git',
+                          url: 'git@github.com:rokmclsk/test2.git',
                           credentialsId: 'jenkins',
                         ]]
                 ])
-                sshagent(credentials: ['jenkins-ssh-private']){
+                sshagent(credentials: ['jenkins']){
                     sh("""
                         #!/usr/bin/env bash
                         set +x
