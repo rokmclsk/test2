@@ -25,6 +25,7 @@ node {
                git config --global user.name "rokmclsk"
                git config --global user.email "rokmclsk@hanmail.net"
                git commit -m 'Update the deployment file'"""
+          }
       }      
    }
 }
